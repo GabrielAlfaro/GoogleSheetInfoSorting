@@ -2,30 +2,34 @@ function onOpen(){
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('Populate Sheet').addItem('Auto-Populate', 'myFunction').addToUi();
 }
+/*
+When the Google Sheet is opened the function onOpen() will create a button that will perform the sorting automatically.
+*/
 
 function myFunction() {
   //url for the pop response form
-  var s1 = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1zwKV-9b33K314vGi0NSn7V149ymIQgyJbllkwdt0AmM/edit#gid=670097939");
+  var s1 = SpreadsheetApp.openByUrl("URL");
+  
+  //The URL here is removed for privacy and replaced by "URL" of the google sheet.
   
   var signInSheet = s1.getSheetByName("Form Responses 1");
   
   /*
   The URL above needs to be the url to the sign in google sheet
   */
-  var s2 = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1LbcLm1yFwcoc_UpbEQg2iy9mFCVksP5DryHTnQH8nmg/edit#gid=0");
+  var s2 = SpreadsheetApp.openByUrl("URL");
   var masterlist = s2.getSheetByName("Sheet1");
   /*
-  The URL for this variable is connected to the information of every student
+  The URL for this^ variable is connected to the information of every student as well as being removed from this code.
   */
   //and set the name of the sheet at the bottom of the google sheet page in the quotations. Ex: ("Sheet1")
   //Sheet1 will be the default name when making the google sheet
-  var ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1c-_Flq4EGhX59kzLViTukOzbEA0hgPBwhISfDhFC_NA/edit#gid=998166453");
+  var ss = SpreadsheetApp.openByUrl("URL");
   /*
   This URL is the link to the spreadsheet that contains the student list and the MONTH Attend
   */
   var studentlist = ss.getSheetByName("Student List");
   //This is to write to the Student List Sheet
-  
   
   
   var sheetL = signInSheet.getRange("A2:A").getValues();
@@ -37,11 +41,14 @@ function myFunction() {
   var mlength = masterlist.getRange("C2:C").getValues();
   var masterLength = mlength.filter(String).length;
   
-  //Logger.log(masterLength);
+  /*
+  The above code gets the information of each column, puts it into a dynamic array and gets the length of each column.
+  */
+  
   
   var uniqueValues = signInSheet.getRange("I2:I").getValues();//used for the unique values of all lunch numbers
   var uniqueLength = uniqueValues.filter(String).length;
-  //Column E, unique lunch numbers
+  //Column E, unique ID Numbers
   
   //var inputLunch = signInSheet.getRange(2,5,lunchLength,1).getValues();//array with lunch numbers
   var inputLunch = signInSheet.getRange("E2:E").getValues();
@@ -60,35 +67,25 @@ function myFunction() {
 
  
  var uniqueLunch = [];
-
 for(var w = 0; w < uniqueNum.length; w++){
   var lunchNum2 = " ";
   lunchNum2 = Number(uniqueNum[w]);
-  //Logger.log(lunchNum1);
-  //Logger.log(lunchNum1);
   var lunchLength = lunchNum2.toString().length;
-  //Logger.log(lunchLength);
     for(var x = 0; x < masterLength; x++){
       if(lunchNum2 == masterInfo[x][2] && lunchLength == 5){//2 for col is the lunch number, 3rd col in array
         uniqueLunch.push(lunchNum2);
-        //Logger.log(uniqueLunch[x]);
       }
     }
 }
 
 var uniqueLunchLength = uniqueLunch.filter(String).length;//total valide lunch numbers
 
-//Logger.log(inputLunch);
-
-
-//Logger.log(lunchLength);
 //w and x already used
 var totalNum = uniqueLunchLength + 10;
 //bottom function uses unique lunch number, top function uses unique last name
 //put the signIn Entries into the month sheet
 
-  
-//Bound for Month Attendance Code*****************  
+
 for(var i = 0; i < uniqueLunchLength; i++){
 //changed sheetLength to uniqueLunchLength to lunchLength
 //After first bracket function
@@ -101,11 +98,13 @@ for(var i = 0; i < uniqueLunchLength; i++){
   var month = date.slice(4,7).toString();
   var day = Number(date.slice(8,10));
   var year = Number(date.slice(11,15));
-  //Logger.log(month);
+  
+  /*
+  The slicing was to help sort the student information by month to respective google sheet tabs.
+  */
   
   var currentLunchArray = [];
   
- // Logger.log(masterlist.getRange(2,3).getValue());
   for(var m = 0; m < masterLength; m++){//find the index where the lunch number is
     var temp = masterInfo[m][2];
     if(lunchNum == temp){
@@ -113,8 +112,6 @@ for(var i = 0; i < uniqueLunchLength; i++){
       var firstName = masterInfo[m][1];
       var pI = masterInfo[m][2];
       var fullName = firstName+" "+lastName;
-      //Logger.log(fullName+" Name");
-      //Logger.log(pI+" pI");
       var temp2 = masterInfo[m][2];
       for(var h = 0; h < sheetLength; h++){
       //Logger.log(inputLunch[h]);
@@ -128,11 +125,8 @@ for(var i = 0; i < uniqueLunchLength; i++){
     }
   }
   
-  //Logger.log(currentLunchArray+" Lunch");
-  //Logger.log(currentLunchArray.length);
-  
   var monthString = "";
-    switch(month){//switch statement-------------------------
+    switch(month){
     case "Jan":
       //monthVal = 1;
       monthString = "JAN Attend";
@@ -197,13 +191,7 @@ for(var i = 0; i < uniqueLunchLength; i++){
       //monthVal = 0;
       //totalDays = 0;
       break;
-  }//switch statement-----------------------------------
-  
-  
-
-Logger.log(i+" "+currentLunchArray.length);
-Logger.log(monthString+"  is the name");
-Logger.log(fullName+ " fullName");
+  }
   
   var daySheet = ss.getSheetByName(monthString);
   
@@ -221,17 +209,9 @@ Logger.log(fullName+ " fullName");
     daySheet.getRange(i+12,3).setValue(pI);
     daySheet.getRange(i+12, column).setValue(1);
   }
- 
-  //CurrentTest--------------------
-  
   //before last backet of function
 }
-//Bound for Month Attendance Code********************
 
-
-
-
-//****************Bound of Code
 var masterIndex = 0;
 for(var y = 0; y < uniqueLunchLength; y++){//changed y = 0 to y = 1
 //have to compare last names to add to student list, will change if can't have lunch numbers in each spreadsheet
@@ -286,6 +266,5 @@ Then you're good to go and it will print each student to the Student List and to
     }/*if statement*/else{}
    }//for loop with x
 }
-//******************Bound of Code
 
 }
